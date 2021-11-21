@@ -34,8 +34,6 @@ const MindNode = () => {
     const [url, setUrl] = useState("")
     const [err, setErr] = useState("")
 
-    
-
     const onConnect = (params) =>{
       setElements((els) => addEdge({ ...params, type: 'buttonedge' }, els));
       console.log("This is param1",params);
@@ -45,7 +43,18 @@ const MindNode = () => {
       }).catch(err=>{
         console.log("this is err in sceneFlow", err)
       })
-    
+    };
+
+    const nodePositionUpdate = (event, node) =>{
+      console.log("node", node)
+      let temp = {id: node.id, position:JSON.stringify(node.position)}
+      console.log("temp", temp)
+      Axios.put("http://localhost:3001/videoscenes/position", temp).then(res=>{
+        console.log('THIS is update nodePositionUpdate',res )
+        // fetchScenes();
+      }).catch(err=>{
+        console.log("this is err in nodePositionUpdate", err)
+      })
     };
 
       // gets called after end of edge gets dragged to another source or target
@@ -55,6 +64,7 @@ const MindNode = () => {
     const onElementsRemove = (elementsToRemove) => {
       setElements((els) => removeElements(elementsToRemove, els))
     };
+    
     const fetchScenes = ()=>{
       setElements(initialElements);
       Axios.get("http://localhost:3001/fetchVedioScenes/1").then(res=>{
@@ -64,8 +74,7 @@ const MindNode = () => {
             let temp = <div >
        <div className="card" >
             <img className="card-img-top" src={item.thumbnail} height = '50px' alt="Thubnail Image"/>
-            
-               <div className="card-body"  onClick = {()=>alert(`You are Welcome to scene : ${item.name}` )}>
+            <div className="card-body"  onClick = {()=>alert(`You are Welcome to scene : ${item.name}` )}>
                    <p className="card-text">{item.name}</p>
                    <p className="card-text">{item.thumbnail}</p>
                    <p className="card-text">{item.vedio_url}</p>
@@ -81,10 +90,7 @@ const MindNode = () => {
         });
         console.log("this is wat i want see on console",array);
         setElements(e=> e.concat(...array));
-  
         console.log("this is a array", array)
-
-      
       }).catch(err=>{
         console.log("this is err in vedioscene", err)
       })
@@ -152,6 +158,7 @@ const MindNode = () => {
       snapGrid={[16, 16]}
       onEdgeUpdate={onEdgeUpdate}
       onLoad={onLoad}
+      onNodeDragStop ={nodePositionUpdate}
 
       key="edge-with-button"
         >
@@ -205,7 +212,6 @@ const MindNode = () => {
                 <br/>
                  <span  className="error">{err}</span>
             </div>
-            
         </>
     )
     

@@ -1,27 +1,16 @@
-import React from 'react';
-import Modal from './Modal'
+
+import React, { useState } from 'react';
+
 import {
   getBezierPath,
   getEdgeCenter,
   getMarkerEnd,
 } from 'react-flow-renderer';
-
+import { Button ,Modal} from 'react-bootstrap';
 // import './index.css';
 
 const foreignObjectSize = 40;
 
-const onEdgeClick = (evt, id) => {
-  evt.stopPropagation();
-  // alert(`remove ${id}`);
-
-    // const data = window.prompt("Give me data", "");
-    // console.log("this is data",data);
-    return(
-  <Modal/>
-    )
-
-
-};
 
 export default function CustomEdge({
   id,
@@ -51,7 +40,15 @@ export default function CustomEdge({
     targetX,
     targetY,
   });
+  const [show, setShow] = useState(false);
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const onEdgeClick = (evt, id) => {
+    evt.stopPropagation();
+    handleShow()
+  };
+  
   return (
     <>
       <path
@@ -78,6 +75,23 @@ export default function CustomEdge({
           </button>
         </body>
       </foreignObject>
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Scene Flow Rule</Modal.Title>
+        </Modal.Header>
+        <textarea id="w3review" name="w3review" rows="4" cols="50" placeholder = 'Enter scene rule script' style= {{margin: '10px'}}>
+
+</textarea>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save 
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
